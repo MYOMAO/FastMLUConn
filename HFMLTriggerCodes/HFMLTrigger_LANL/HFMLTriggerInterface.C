@@ -95,14 +95,14 @@ HFMLTriggerInterface::HFMLTriggerInterface(std::string filename)
 	  , m_hitPixelZMap(nullptr)
 {
 	_foutname = filename;
+	cout << "HFMLTriggerInterface - OK" << endl;
 }
 
 TFile * DebugFile;
-TTree * HitTreeZZ;
+TTree *RawHitTree;
+TTree * TruthTrackTree;
 
-int HitSize;
-int MVTXHitSize;
-int EvtID;
+/*
 float MVTXHitX[10000];
 float MVTXHitY[10000];
 float MVTXHitZ[10000];
@@ -124,59 +124,162 @@ int ColSave[10000];
 
 int NTruthTrks;
 int TruthTrkID[10000];
+int TruthTrkPDGID[10000];
+int ParentPDGIDSave[10000];
+int ParentTrkIDSave[10000];
 
-float OriginX[10000];
-float OriginY[10000];
-float OriginZ[10000];
+float TrackVx[10000];
+float TrackVy[10000];
+float TrackVz[10000];
+float TrackPx[10000];
+float TrackPy[10000];
+float TrackPz[10000];
+float TrackE[10000];
+*/
 
-float OriginR[10000];
-float OriginRho[10000];
+std::vector<float> MVTXHitX;
+std::vector<float> MVTXHitY;
+std::vector<float> MVTXHitZ;
+
+
+std::vector<float> MVTXChipHitX;
+std::vector<float> MVTXChipHitY;
+std::vector<float> MVTXChipHitZ;
+
+std::vector<float> MVTXLocalHitX;
+std::vector<float> MVTXLocalHitY;
+std::vector<float> MVTXLocalHitZ;
+
+
+std::vector<float> INTTHitX;
+std::vector<float> INTTHitY;
+std::vector<float> INTTHitZ;
+std::vector<int> MVTXTrkID; 
+std::vector<int> INTTTrkID;
+std::vector<int> LayerID;
+std::vector<int> LadderZIdSave;
+std::vector<int> LadderPhiIdSave;
+std::vector<int> RowSave;
+std::vector<int> ColSave;
+
+
+std::vector<int> TruthTrkID;
+std::vector<int> TruthTrkPDGID;
+std::vector<int> ParentPDGIDSave;
+std::vector<int> ParentTrkIDSave;
+
+std::vector<float> TrackVx;
+std::vector<float> TrackVy;
+std::vector<float> TrackVz;
+std::vector<float> TrackPx;
+std::vector<float> TrackPy;
+std::vector<float> TrackPz;
+std::vector<float> TrackE;
+
+
+int HitSize;
+int MVTXHitSize;
+int EvtID;
+int INTTHitSize;
+int NTruthTrks;
+
+
+
 
 unsigned int long long NEGED;
 
 int HFMLTriggerInterface::Init(PHCompositeNode* topNode)
 {
 
+	std::cout << "Initial Bri" << std::endl;
 	_ievent = 0;
 
 	DebugFile = new TFile("DebugFile.root","RECREATE");
 
 	DebugFile->cd();
 
-	HitTreeZZ = new TTree("HitTreeZZ","HitTreeZZ");
-
-	HitTreeZZ->Branch("EvtID",&EvtID,"EvtID/I");
-	HitTreeZZ->Branch("MVTXHitSize",&MVTXHitSize,"MVTXHitSize/I");
-	HitTreeZZ->Branch("MVTXHitX",MVTXHitX,"MVTXHitX[MVTXHitSize]/F");
-	HitTreeZZ->Branch("MVTXHitY",MVTXHitY,"MVTXHitY[MVTXHitSize]/F");
-	HitTreeZZ->Branch("MVTXHitZ",MVTXHitZ,"MVTXHitZ[MVTXHitSize]/F");
-	HitTreeZZ->Branch("MVTXTrkID",MVTXTrkID,"MVTXTrkID[MVTXHitSize]/I");
-
-
-	HitTreeZZ->Branch("INTTHitSize",&INTTHitSize,"INTTHitSize/I");
-	HitTreeZZ->Branch("INTTHitX",INTTHitX,"INTTHitX[INTTHitSize]/F");
-	HitTreeZZ->Branch("INTTHitY",INTTHitY,"INTTHitY[INTTHitSize]/F");
-	HitTreeZZ->Branch("INTTHitZ",INTTHitZ,"INTTHitZ[INTTHitSize]/F");
-	HitTreeZZ->Branch("INTTTrkID",INTTTrkID,"INTTTrkID[MVTXHitSize]/I");
+	RawHitTree = new TTree("RawHitTree","RawHitTree");
+/*
+	RawHitTree->Branch("EvtID",&EvtID,"EvtID/I");
+	RawHitTree->Branch("MVTXHitSize",&MVTXHitSize,"MVTXHitSize/I");
+	RawHitTree->Branch("MVTXHitX",MVTXHitX,"MVTXHitX[MVTXHitSize]/F");
+	RawHitTree->Branch("MVTXHitY",MVTXHitY,"MVTXHitY[MVTXHitSize]/F");
+	RawHitTree->Branch("MVTXHitZ",MVTXHitZ,"MVTXHitZ[MVTXHitSize]/F");
+	RawHitTree->Branch("MVTXTrkID",MVTXTrkID,"MVTXTrkID[MVTXHitSize]/I");
 
 
+	RawHitTree->Branch("INTTHitSize",&INTTHitSize,"INTTHitSize/I");
+	RawHitTree->Branch("INTTHitX",INTTHitX,"INTTHitX[INTTHitSize]/F");
+	RawHitTree->Branch("INTTHitY",INTTHitY,"INTTHitY[INTTHitSize]/F");
+	RawHitTree->Branch("INTTHitZ",INTTHitZ,"INTTHitZ[INTTHitSize]/F");
+	RawHitTree->Branch("INTTTrkID",INTTTrkID,"INTTTrkID[MVTXHitSize]/I");
 
-	HitTreeZZ->Branch("LadderZIdSave",LadderZIdSave,"LadderZIdSave[INTTHitSize]/I");
-	HitTreeZZ->Branch("LadderPhiIdSave",LadderPhiIdSave,"LadderPhiIdSave[INTTHitSize]/I");
-	HitTreeZZ->Branch("RowSave",RowSave,"RowSave[INTTHitSize]/I");
-	HitTreeZZ->Branch("ColSave",ColSave,"ColSave[INTTHitSize]/I");
 
-	HitTreeZZ->Branch("HitSize",&HitSize,"HitSize/I");
-	HitTreeZZ->Branch("LayerID",LayerID,"LayerID[HitSize]/F");
 
-	HitTreeZZ->Branch("NTruthTrks",&NTruthTrks,"NTruthTrks/I");
-	HitTreeZZ->Branch("TruthTrkID",TruthTrkID,"TruthTrkID[NTruthTrks]/I");
+	RawHitTree->Branch("LadderZIdSave",LadderZIdSave,"LadderZIdSave[INTTHitSize]/I");
+	RawHitTree->Branch("LadderPhiIdSave",LadderPhiIdSave,"LadderPhiIdSave[INTTHitSize]/I");
+	RawHitTree->Branch("RowSave",RowSave,"RowSave[INTTHitSize]/I");
+	RawHitTree->Branch("ColSave",ColSave,"ColSave[INTTHitSize]/I");
 
-	HitTreeZZ->Branch("OriginX",OriginX,"OriginX[NTruthTrks]/F");
-	HitTreeZZ->Branch("OriginY",OriginY,"OriginY[NTruthTrks]/F");
-	HitTreeZZ->Branch("OriginZ",OriginZ,"OriginZ[NTruthTrks]/F");
-	HitTreeZZ->Branch("OriginR",OriginR,"OriginR[NTruthTrks]/F");
-	HitTreeZZ->Branch("OriginRho",OriginRho,"OriginRho[NTruthTrks]/F");
+	RawHitTree->Branch("HitSize",&HitSize,"HitSize/I");
+	RawHitTree->Branch("LayerID",LayerID,"LayerID[HitSize]/F");
+*/
+
+	RawHitTree->Branch("EvtID",&EvtID,"EvtID/I");
+	RawHitTree->Branch("MVTXHitSize",&MVTXHitSize);
+	RawHitTree->Branch("MVTXHitX",&MVTXHitX);
+	RawHitTree->Branch("MVTXHitY",&MVTXHitY);
+	RawHitTree->Branch("MVTXHitZ",&MVTXHitZ);
+
+	RawHitTree->Branch("MVTXLocalHitX",&MVTXLocalHitX);
+	RawHitTree->Branch("MVTXLocalHitY",&MVTXLocalHitY);
+	RawHitTree->Branch("MVTXLocalHitZ",&MVTXLocalHitZ);
+
+	RawHitTree->Branch("MVTXChipHitX",&MVTXLocalHitX);
+	RawHitTree->Branch("MVTXChipHitY",&MVTXLocalHitY);
+	RawHitTree->Branch("MVTXChipHitZ",&MVTXLocalHitZ);
+
+
+	RawHitTree->Branch("MVTXTrkID",&MVTXTrkID);
+
+
+	RawHitTree->Branch("INTTHitSize",&INTTHitSize,"INTTHitSize/I");
+	RawHitTree->Branch("INTTHitX",&INTTHitX);
+	RawHitTree->Branch("INTTHitY",&INTTHitY);
+	RawHitTree->Branch("INTTHitZ",&INTTHitZ);
+	RawHitTree->Branch("INTTTrkID",&INTTTrkID);
+
+
+
+	RawHitTree->Branch("LadderZIdSave",&LadderZIdSave);
+	RawHitTree->Branch("LadderPhiIdSave",&LadderPhiIdSave);
+	RawHitTree->Branch("RowSave",&RowSave);
+	RawHitTree->Branch("ColSave",&ColSave);
+
+	RawHitTree->Branch("HitSize",&HitSize,"HitSize/I");
+	RawHitTree->Branch("LayerID",&LayerID);
+
+
+	TruthTrackTree = new TTree("TruthTrackTree","TruthTrackTree");
+
+
+	TruthTrackTree->Branch("NTruthTrks",&NTruthTrks,"NTruthTrks/I");
+	TruthTrackTree->Branch("TruthTrkID",&TruthTrkID);
+	TruthTrackTree->Branch("ParentPDGIDSave",&ParentPDGIDSave);
+	TruthTrackTree->Branch("ParentTrkIDSave",&ParentTrkIDSave);
+
+
+
+	TruthTrackTree->Branch("TrackVx",&TrackVx);
+	TruthTrackTree->Branch("TrackVy",&TrackVy);
+	TruthTrackTree->Branch("TrackVz",&TrackVz);
+
+	TruthTrackTree->Branch("TrackPx",&TrackPx);
+	TruthTrackTree->Branch("TrackPy",&TrackPy);
+	TruthTrackTree->Branch("TrackPz",&TrackPz);
+	TruthTrackTree->Branch("TrackE",&TrackE);
+
+
 
 	_f = new TFile((_foutname + string(".root")).c_str(), "RECREATE");
 
@@ -256,14 +359,14 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 
 	assert(m_tGeometry);
 
-	cout << "ROCK - Runed bro" << endl;
+//	cout << "ROCK - Runed bro" << endl;
 	// load nodes
 	auto res = load_nodes(topNode);
-	cout << "ROCK - Runed bro - Pass 1.2 " << endl;
+//	cout << "ROCK - Runed bro - Pass 1.2 " << endl;
 	
 	if (res != Fun4AllReturnCodes::EVENT_OK)
 		return res;
-	cout << "ROCK - Runed bro - Pass 1.4 " << endl;
+//	cout << "ROCK - Runed bro - Pass 1.4 " << endl;
 /*
 	PHHepMCGenEvent* genevt = nullptr;
 	if(m_GenEventMap->get(_embedding_id)) genevt = m_GenEventMap->get(_embedding_id);
@@ -326,7 +429,7 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 	//  ptree pt;
 
 	rapidjson::Document d;
-	cout << "Pass 2" << endl;
+//	cout << "Pass 2" << endl;
 	
 	d.SetObject();
 	rapidjson::Document::AllocatorType& alloc = d.GetAllocator();
@@ -358,7 +461,7 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 	// meta data
 	//  ptree metaTree;
 	rapidjson::Value metaTree(rapidjson::kObjectType);
-	cout << "Pass 3" << endl;
+//	cout << "Pass 3" << endl;
 
 	metaTree.AddMember("Description", "These are meta data for this event. Not intended to use in ML algorithm", alloc);
 	metaTree.AddMember("EventID", _ievent, alloc);
@@ -407,7 +510,7 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 
 	//  ptree truthTriggerFlagTree;
 	rapidjson::Value truthTriggerFlagTree(rapidjson::kObjectType);
-	cout << "Pass 4" << endl;
+//	cout << "Pass 4" << endl;
 
 	truthTriggerFlagTree.AddMember("Description",
 			"These are categorical true/false MonteCalo truth tags for the event. These are only known in training sample. This would be trigger output in real data processing.",
@@ -465,7 +568,7 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 
 
 
-	cout << "Pass 5" << endl;
+	//cout << "Pass 5" << endl;
 
 	auto hitset_range = m_hitsets->getHitSets(TrkrDefs::TrkrId::mvtxId);
 	for (auto hitset_iter =  hitset_range.first; hitset_iter != hitset_range.second; ++hitset_iter)
@@ -552,6 +655,9 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 				   */
 
 				TVector3 world_coords = geom->get_world_from_local_coords(surface, m_tGeometry ,local_coords);
+
+
+
 				//unsigned int halflayer = (int) pixel_x >= geom->get_NX() / 2 ? 0 : 1;
 
 				//unsigned int halfLayerIndex(layer * 2 + halflayer);
@@ -585,11 +691,29 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 				hitIDTree.AddMember("Pixel_z", pixel_z, alloc);
 				hitTree.AddMember("ID", hitIDTree, alloc);
 
+				double PixelGlobalX = world_coords.x()+ local_coords.x();
+				double PixelGlobalY = world_coords.y()+ local_coords.y();
+				double PixelGlobalZ = world_coords.z()+ local_coords.z();
+
 				hitTree.AddMember("Coordinate",
+						loadCoordinate(PixelGlobalX,
+							PixelGlobalY,
+							PixelGlobalZ),
+						alloc);
+
+
+				hitTree.AddMember("ChipGlobalCoordinate",
 						loadCoordinate(world_coords.x(),
 							world_coords.y(),
 							world_coords.z()),
 						alloc);
+
+				hitTree.AddMember("PixelLocalCoordinate",
+						loadCoordinate(local_coords.x(),
+							local_coords.y(),
+							local_coords.z()),
+						alloc);
+
 
 				//      rawHitsTree.add_child("MVTXHit", hitTree);
 				rawHitsTree.PushBack(hitTree, alloc);
@@ -602,13 +726,32 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 				//m_hitPixelPhiMap->Fill(pixelPhiIndex, atan2(world_coords.y(), world_coords.x()), layer);
 				//m_hitPixelPhiMapHL->Fill(pixelPhiIndexHL, atan2(world_coords.y(), world_coords.x()), layer);
 				//m_hitPixelZMap->Fill(pixelZIndex, world_coords.z(), halfLayerIndex);
-
+/*
 				MVTXHitX[MVTXHitSize] = world_coords.x();
 				MVTXHitY[MVTXHitSize] = world_coords.y();
 				MVTXHitZ[MVTXHitSize] = world_coords.z();
 				MVTXTrkID[MVTXHitSize] = trkid;
 				LayerID[HitSize] = layer;
 				++hitID;
+*/
+
+				MVTXHitX.push_back(world_coords.x() + local_coords.x());
+				MVTXHitY.push_back(world_coords.y() + local_coords.y());
+				MVTXHitZ.push_back(world_coords.z() + local_coords.z());
+
+				MVTXLocalHitX.push_back(local_coords.x());
+				MVTXLocalHitY.push_back(local_coords.y());
+				MVTXLocalHitZ.push_back(local_coords.z());
+				
+				MVTXChipHitX.push_back(world_coords.x());
+				MVTXChipHitY.push_back(world_coords.y());
+				MVTXChipHitZ.push_back(world_coords.z());
+
+
+
+				MVTXTrkID.push_back(trkid);
+				LayerID.push_back(layer);
+			
 				MVTXHitSize = MVTXHitSize + 1;
 				HitSize = HitSize + 1;
 			}  //    if (layer < _nlayers_maps)
@@ -752,7 +895,7 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 }
 
 */
-	cout << "Pass 6" << endl;
+	//cout << "Pass 6" << endl;
 
 rawHitTree.AddMember("MVTXHits", rawHitsTree, alloc);
 rapidjson::Value rawHitsTree2(rapidjson::kArrayType);
@@ -886,6 +1029,7 @@ for (TrkrHitSetContainer::ConstIterator hitset_iter = hitset_range_intt.first;
 			//		rawHitTree.PushBack(hitTree2, alloc);
 
 			m_hitLayerMap->Fill(hit_location[0], hit_location[1], layer);
+/*
 			INTTHitX[INTTHitSize] = hit_location[0];
 			INTTHitY[INTTHitSize] = hit_location[1];
 			INTTHitZ[INTTHitSize] = hit_location[2];
@@ -896,7 +1040,17 @@ for (TrkrHitSetContainer::ConstIterator hitset_iter = hitset_range_intt.first;
 			ColSave[INTTHitSize] = Col;
 
 			LayerID[HitSize] = layer;
+*/
 
+			INTTHitX.push_back(hit_location[0]);
+			INTTHitY.push_back(hit_location[1]);
+			INTTHitZ.push_back(hit_location[2]);
+			INTTTrkID.push_back(trkid);
+			LadderZIdSave.push_back(LadderZId);
+			LadderPhiIdSave.push_back(LadderPhiId);
+			RowSave.push_back(Row);
+			ColSave.push_back(Col);
+			LayerID.push_back(layer);
 
 			hitIDINTT++;
 			INTTHitSize = INTTHitSize + 1;
@@ -914,7 +1068,7 @@ for (TrkrHitSetContainer::ConstIterator hitset_iter = hitset_range_intt.first;
 
 rawHitTree.AddMember("INTTHITS", rawHitsTree2, alloc);
 
-cout << "Pass 6" << endl;
+//cout << "Pass 6" << endl;
 
 //	cout << "ZZ Check: INTTHITS = " << INTTHITS << endl;
 
@@ -977,8 +1131,12 @@ auto pp_range = m_truthInfo->GetParticleRange();
 NTruthTrks = 0;
 int ParentPDGID;
 int ParentTrkID;
+int GrandParentPDGID;
+int GrandParentTrkID;
+int trktype;
 
 	PHG4Particle *mother = nullptr;
+	PHG4Particle *grandmother = nullptr;
 
 
 for (auto pp_iter = pp_range.first;
@@ -992,7 +1150,8 @@ for (auto pp_iter = pp_range.first;
 
 	ParentPDGID = 999;
 	ParentTrkID = -999;
-
+	GrandParentPDGID = 999;
+	GrandParentTrkID = -999;
 
 
 	if (g4particle->get_parent_id() == 0)
@@ -1005,25 +1164,38 @@ for (auto pp_iter = pp_range.first;
 		ParentPDGID = mother->get_pid();
 		ParentTrkID = mother->get_track_id();
 
+	}
+
+
+	if (mother->get_parent_id() == 0)
+	{
+			GrandParentPDGID = 0;
+	
+	}else
+	{
+
+		grandmother = m_truthInfo->GetParticle(mother->get_parent_id());
+		GrandParentPDGID = grandmother->get_pid();
+		GrandParentTrkID = grandmother->get_track_id();
 
 	}
 
+
+
 	//if(abs(ParentPDGID) > 400 && abs(ParentPDGID)  < 500) cout << "ParentPDGID = " << ParentPDGID << "   ParentTrkID = " << ParentTrkID << std::endl; 
 	if(abs(ParentPDGID) == 421) cout << "ParentPDGID = " << ParentPDGID << "   ParentTrkID = " << ParentTrkID << std::endl; 
+	if(ParentPDGID == 0) trktype = 0;
+	else if((abs(ParentPDGID) == 521 || abs(ParentPDGID) == 531 || abs(ParentPDGID) == 511 || abs(ParentPDGID) == 5122 || abs(ParentPDGID) == 553)) trktype = 2;	
+	else if((abs(GrandParentPDGID) == 521 || abs(GrandParentPDGID) == 531 || abs(GrandParentPDGID) == 511 || abs(GrandParentPDGID) == 5122 || abs(GrandParentPDGID) == 553) && (abs(ParentPDGID) == 421 || abs(ParentPDGID) == 431 || abs(ParentPDGID) == 411 || abs(ParentPDGID) == 4122 || abs(ParentPDGID) == 443)) trktype = 3;
+	else if((GrandParentPDGID == 0) && (abs(ParentPDGID) == 421 || abs(ParentPDGID) == 431 || abs(ParentPDGID) == 411 || abs(ParentPDGID) == 4122 || abs(ParentPDGID) == 443)) trktype = 4;
+	else if((GrandParentPDGID == 0) && (abs(ParentPDGID) == 310 || abs(ParentPDGID) == 130 || abs(ParentPDGID) == 2122 || abs(ParentPDGID) == 3122)) trktype = 4;
+	else if((GrandParentPDGID == 0) && (abs(ParentPDGID) == 13 || abs(ParentPDGID) == 211 || abs(ParentPDGID) == 321)) trktype = 5;
+	else trktype = 6;
+
+
 
 	vtx = m_truthInfo->GetVtx(g4particle->get_vtx_id());
 
-
-	TruthTrkID[NTruthTrks] = g4particle->get_track_id();
-
-	OriginX[NTruthTrks] = vtx->get_x();
-	OriginY[NTruthTrks] = vtx->get_y();
-	OriginZ[NTruthTrks] = vtx->get_z();
-
-	OriginR[NTruthTrks] = sqrt( vtx->get_x() *  vtx->get_x()  +  vtx->get_y() *  vtx->get_y() +  vtx->get_z() *  vtx->get_z());
-	OriginRho[NTruthTrks] = sqrt(vtx->get_x() *  vtx->get_x()  +  vtx->get_y() *  vtx->get_y() );
-
-	NTruthTrks = NTruthTrks + 1;
 
 
 	if (! m_track_g4hits_map.count(g4particle->get_track_id()))
@@ -1253,9 +1425,43 @@ for (auto pp_iter = pp_range.first;
 
 
 
+/*
+
+	TruthTrkID[NTruthTrks] = g4particle->get_track_id();
+	TruthTrkPDGID[NTruthTrks] = g4particle->get_pid();
+
+	TrackVx[NTruthTrks] = vtx->get_x();
+	TrackVy[NTruthTrks] = vtx->get_y();
+	TrackVz[NTruthTrks] = vtx->get_z();
+
+	TrackPx[NTruthTrks] = g4particle->get_px();
+	TrackPy[NTruthTrks] = g4particle->get_py();
+	TrackPz[NTruthTrks] = g4particle->get_pz();
+	TrackE[NTruthTrks] = g4particle->get_e();
+	
+	ParentPDGIDSave[NTruthTrks] = ParentPDGID;
+	ParentTrkIDSave[NTruthTrks] = ParentTrkID;
+	
+
+	NTruthTrks = NTruthTrks + 1;
+*/
+
+	TruthTrkID.push_back( g4particle->get_track_id());
+	TruthTrkPDGID.push_back( g4particle->get_pid());
+	TrackVx.push_back( vtx->get_x());
+	TrackVy.push_back( vtx->get_y());
+	TrackVz.push_back( vtx->get_z());
+
+	TrackPx.push_back( g4particle->get_px());
+	TrackPy.push_back( g4particle->get_py());
+	TrackPz.push_back( g4particle->get_pz());
+	TrackE.push_back( g4particle->get_e());
+
+	ParentPDGIDSave.push_back(ParentPDGID);
+	ParentTrkIDSave.push_back(ParentTrkID);
 
 
-
+	NTruthTrks = NTruthTrks + 1;
 
 
 
@@ -1265,12 +1471,15 @@ for (auto pp_iter = pp_range.first;
 	trackTree.AddMember("TrackSequenceInEvent", g4particle->get_track_id(), alloc);
 	trackTree.AddMember("HitInTruthTrack", trackHitTree, alloc);
 	trackTree.AddMember("TrackID", trkid, alloc);		
+	trackTree.AddMember("TrackType", trktype, alloc);		
+	
 	trackTree.AddMember("MVTXHitID", MVTXHitIDTree, alloc);
 	trackTree.AddMember("INTTHitID", INTTHitIDTree, alloc);
 
 	trackTree.AddMember("ParentPDGID", ParentPDGID, alloc);
 	trackTree.AddMember("ParentTrkID", ParentTrkID, alloc);
-
+	trackTree.AddMember("GrandParentPDGID", GrandParentPDGID, alloc);
+	trackTree.AddMember("GrandParentTrkID", GrandParentTrkID, alloc);
 
 	trackTree.AddMember("ParticleTypeID", g4particle->get_pid(), alloc);
 	trackTree.AddMember("TrackMomentum",
@@ -1289,6 +1498,8 @@ for (auto pp_iter = pp_range.first;
 	truthTracksTree.PushBack(trackTree, alloc);
 
 //      cout << "Pass 6.14" << endl;
+	
+
 
 
 		//cout << "g4particle->get_pid() = " << g4particle->get_pid() << "   g4particle->get_Z() = " << g4particle->get_Z()  << endl;
@@ -1321,24 +1532,55 @@ for (auto pp_iter = pp_range.first;
 
 
 	EvtID = _ievent;
-	HitTreeZZ->Fill();
+	RawHitTree->Fill();
+	TruthTrackTree->Fill();
 
 	++_ievent;
+
+	MVTXHitX.clear();
+	MVTXHitY.clear();
+	MVTXHitZ.clear();
+
+
+
+	INTTHitX.clear();
+	INTTHitY.clear();
+	INTTHitZ.clear();
+	MVTXTrkID.clear(); 
+	INTTTrkID.clear();
+	LayerID.clear();
+	LadderZIdSave.clear();
+	LadderPhiIdSave.clear();
+	RowSave.clear();
+	ColSave.clear();
+
+
+	TruthTrkID.clear();
+	TruthTrkPDGID.clear();
+	ParentPDGIDSave.clear();
+	ParentTrkIDSave.clear();
+
+	TrackVx.clear();
+	TrackVy.clear();
+	TrackVz.clear();
+	TrackPx.clear();
+	TrackPy.clear();
+	TrackPz.clear();
+	TrackE.clear();
+
 
 	return Fun4AllReturnCodes::EVENT_OK;
 }
 
 int HFMLTriggerInterface::End(PHCompositeNode* topNode)
 {
-	if (_f)
-	{
-		_f->cd();
-		_f->Write();
-	}
 
 	DebugFile->cd();
-	DebugFile->Write();
-
+	RawHitTree->Write();
+	TruthTrackTree->Write();
+//	DebugFile->Write();
+	DebugFile->Close();
+	
 	if (m_jsonOut.is_open())
 	{
 		m_jsonOut << "]" << endl;
@@ -1354,14 +1596,14 @@ int HFMLTriggerInterface::End(PHCompositeNode* topNode)
 
 int HFMLTriggerInterface::load_nodes(PHCompositeNode* topNode)
 {
-    cout << "Loading Nodes Bro" << endl;
+ //   cout << "Loading Nodes Bro" << endl;
 	m_hitsets = findNode::getClass<TrkrHitSetContainer>(topNode, "TRKR_HITSET");
 	if (!m_hitsets)
 	{
 		std::cout << PHWHERE << "ERROR: Can't find node TRKR_HITSET" << std::endl;
 		return Fun4AllReturnCodes::ABORTEVENT;
 	}
-    cout << "Loading Nodes Bro - Pass 1" << endl;
+//    cout << "Loading Nodes Bro - Pass 1" << endl;
 
 	m_hit_truth_map = findNode::getClass<TrkrHitTruthAssoc>(topNode, "TRKR_HITTRUTHASSOC");
 	if (!m_hit_truth_map)
@@ -1369,7 +1611,7 @@ int HFMLTriggerInterface::load_nodes(PHCompositeNode* topNode)
 		std::cout << PHWHERE << " unable to find DST node TRKR_HITTRUTHASSOC" << std::endl;
 		return Fun4AllReturnCodes::ABORTEVENT;
 	}
-    cout << "Loading Nodes Bro - Pass 2" << endl;
+//    cout << "Loading Nodes Bro - Pass 2" << endl;
 
 	//m_cluster_hit_map = findNode::getClass<TrkrClusterHitAssoc>(topNode, "TRKR_CLUSTERHITASSOC");
 	//if (!m_cluster_hit_map)
@@ -1385,7 +1627,7 @@ int HFMLTriggerInterface::load_nodes(PHCompositeNode* topNode)
 		return Fun4AllReturnCodes::ABORTEVENT;
 	}
 
-    cout << "Loading Nodes Bro - Pass 3" << endl;
+ //   cout << "Loading Nodes Bro - Pass 3" << endl;
 
 	m_g4hits_intt = findNode::getClass<PHG4HitContainer>(topNode, "G4HIT_INTT");
 	if (!m_g4hits_intt)
@@ -1394,7 +1636,7 @@ int HFMLTriggerInterface::load_nodes(PHCompositeNode* topNode)
 		return Fun4AllReturnCodes::ABORTEVENT;
 	}
 
-    cout << "Loading Nodes Bro - Pass 4" << endl;
+//    cout << "Loading Nodes Bro - Pass 4" << endl;
 /*
 	m_GenEventMap = findNode::getClass<PHHepMCGenEventMap>(topNode, "PHHepMCGenEventMap");
 	if (!m_GenEventMap)
@@ -1403,7 +1645,7 @@ int HFMLTriggerInterface::load_nodes(PHCompositeNode* topNode)
 		return Fun4AllReturnCodes::ABORTEVENT;
 	}
 */	
-	cout << "Pass All Brio" << endl;
+//	cout << "Pass All Brio" << endl;
 
 	return Fun4AllReturnCodes::EVENT_OK;
 }
