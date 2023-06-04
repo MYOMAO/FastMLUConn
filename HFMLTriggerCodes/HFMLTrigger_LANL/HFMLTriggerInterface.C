@@ -985,14 +985,31 @@ for (TrkrHitSetContainer::ConstIterator hitset_iter = hitset_range_intt.first;
 		//      cout << "Pass 3.5" << endl;
 
 
-			double hit_location[3] = {0.0, 0.0, 0.0};
+//			TVector2 hit_location(0.0,0.0,0.0);
+			double hit_location[3] = {0.0,0.0,0.0};
 
+			/*
 			geom->find_strip_center(LadderZId,
 					LadderPhiId,
 					Col,
 					Row,
 					hit_location);
+			*/
+			
 
+			
+			auto surface = m_tGeometry->maps().getSiliconSurface(hitsetkey);
+
+//			geom->find_strip_center_localcoords(LadderZId, Row, Col,location);
+
+
+
+			//TVector3 world_coord =  get_world_from_local_coords(, hit_location)
+			geom->find_strip_center(surface,m_tGeometry,LadderZId,LadderPhiId,Col,Row,hit_location);
+
+			//geom->find_strip_center(surface, m_tGeometry, LadderZId, LadderPhiId, Row, Col, hit_location);
+			
+			//Use Surface for INTT too
 
 			rapidjson::Value hitTree2(rapidjson::kObjectType);
 		//      cout << "Pass 4" << endl;
@@ -1021,6 +1038,8 @@ for (TrkrHitSetContainer::ConstIterator hitset_iter = hitset_range_intt.first;
 			   */
 
 			hitTree2.AddMember("Coordinate",	loadCoordinate(hit_location[0], hit_location[1], hit_location[2]),	alloc);
+
+
 
 			//cout << "Pass 4" << endl;
 			rawHitsTree2.PushBack(hitTree2, alloc);
