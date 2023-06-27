@@ -65,14 +65,15 @@ void UserAnalysisInit()
 		se->registerSubsystem(myFinder);
 	}
 
-	HFMLTriggerHepMCTrigger * Test = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance","Test",Enable::signal);
+	HFMLTriggerHepMCTrigger * Test = new HFMLTriggerHepMCTrigger("D0toPiKInAcceptance","Test",Enable::signal,Enable::bbBarSim);
 	Test->Verbosity(0);
 	se->registerSubsystem(Test);
 
-	HFMLTriggerInterface * Test2 = new HFMLTriggerInterface("Test2");
+	HFMLTriggerInterface * Test2 = new HFMLTriggerInterface("NewTest");
 	Test2->Verbosity(0);
+	std::cout << "Right Before registerSubsystem" << std::endl;
 	se->registerSubsystem(Test2);
-  return;
+	return;
 }
 
 #endif

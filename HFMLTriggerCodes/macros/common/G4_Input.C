@@ -46,6 +46,8 @@ R__LOAD_LIBRARY(libFermimotionAfterburner.so)
 namespace Enable
 {
   bool signal = true;
+  bool bbBarSim = true;  
+  
 }
 
 
@@ -215,7 +217,11 @@ namespace PYTHIA8
 {
 //  string config_file = string(getenv("CALIBRATIONROOT")) + "/Generators/phpythia8.cfg";
   //string config_file = (Enable::signal==true)? "/sphenix/user/cdean/public/forZhaozhong/phpythia8_D02Kpi.cfg":"/sphenix/user/cdean/public/forZhaozhong/phpythia8.cfg";
-  string config_file = (Enable::signal==true)? "/sphenix/user/zshi/FastMLLatest/HFMLTriggerCodes/macros/detectors/sPHENIX/phpythia8_Check.cfg":"/sphenix/user/cdean/public/forZhaozhong/phpythia8.cfg";
+	string file1 =  (Enable::signal==true)? "/sphenix/user/zshi/FastMLLatest/HFMLTriggerCodes/macros/detectors/sPHENIX/phpythia8_Check.cfg":"/sphenix/user/cdean/public/forZhaozhong/phpythia8.cfg";
+	string file2 =  (Enable::bbBarSim==true)? "/sphenix/user/zshi/FastMLLatest/HFMLTriggerCodes/macros/detectors/sPHENIX/pptobbbar.cfg":"/sphenix/user/zshi/FastMLLatest/HFMLTriggerCodes/macros/detectors/sPHENIX/phpythia8_Check.cfg";
+
+	string config_file = (Enable::signal==true)? file2 : file1;
+//  if(Enable::bbBarSim==true) config_file = "/sphenix/user/zshi/FastMLLatest/HFMLTriggerCodes/macros/detectors/sPHENIX/pptobbbar.cfg";
 
 }
 

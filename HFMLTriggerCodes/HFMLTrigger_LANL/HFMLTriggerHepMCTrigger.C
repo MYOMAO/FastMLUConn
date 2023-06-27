@@ -36,13 +36,21 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include <HepMC/GenEvent.h>
-#include <HepMC/GenVertex.h>
+#include "HepMC/GenEvent.h"
+#include <HepMC3/GenEvent.h>
+#include <HepMC3/Print.h>            // for Print
+//#include "HepMC/WriterRootTree.h"
+
 #pragma GCC diagnostic pop
-#include <HepMC/GenRanges.h>
+//#include <HepMC/GenRanges.h>
 #include <ffaobjects/FlagSavev1.h>
 #include <phhepmc/PHHepMCGenEvent.h>
 #include <phhepmc/PHHepMCGenEventMap.h>
+
+
+#include "HepMC3/WriterRootTree.h"
+#include "HepMC3/Units.h"
+
 
 #include <TDatabasePDG.h>
 #include <TFile.h>
@@ -68,16 +76,32 @@
 #include <map>
 
 
+#include "TROOT.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TSystem.h"
+#include "TDataType.h"
+//#include "/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/interfaces/HepMCCompatibility/include/HepMCCompatibility.h"
+#include "HepMCCompatibility.h"
 
+
+TFile * fout;
+TTree * T;
+//HepMC::GenEvent * genevt;
+PHHepMCGenEvent * genevt;
+HepMC::GenEvent* truthevent;
+HepMC3::GenEvent* truthevent3;
 
 using namespace std;
 
 
+HepMC3::WriterRootTree * HepMC3Out;
 std::multimap<std::vector<int>, int> decaymap;
 
 HFMLTriggerHepMCTrigger::HFMLTriggerHepMCTrigger(const std::string& moduleName,
 		const std::string& filename
-		, bool IsSignal)
+		, bool IsSignal
+		, bool IsbbBar)
 	: SubsysReco(moduleName)
 	, _ievent(0)
 	, m_RejectReturnCode(Fun4AllReturnCodes::ABORTEVENT)
@@ -91,6 +115,23 @@ HFMLTriggerHepMCTrigger::HFMLTriggerHepMCTrigger(const std::string& moduleName,
 {
 	_foutname = filename;
 	SignalSim = IsSignal;
+	DobbBar = IsbbBar;
+	cout << "INSIDE:: SignalSim = " << SignalSim << "   DobbBar = " << DobbBar << endl;
+	
+	std::cout << "Now Save HepMC Event Records" << std::endl;
+	std::cout << "Now Save Also Just HepMC ONLY - truthevent " << std::endl;
+	
+	std::cout << "Using - <HepMC3/WriterRootTree.h>" << std::endl;
+	fout = new TFile("HepMCFile.root","RECREATE");
+ 
+	HepMC3Out = new HepMC3::WriterRootTree("HepMC3Out.root");
+	std::cout << "Now Set My Own TTree for HepMC" << std::endl;
+	T = new TTree("HepMCTree","HepMCTree");
+	//T->Branch("event",&genevt,256000,0);
+	T->Branch("truthevent",&truthevent,256000,0);
+
+	fout->cd();
+	
 }
 
 int HFMLTriggerHepMCTrigger::Init(PHCompositeNode* topNode)
@@ -164,7 +205,55 @@ int HFMLTriggerHepMCTrigger::process_event(PHCompositeNode* topNode)   //Now it 
 {
 
 	std::cout << "HFMLTriggerHepMCTrigger - Processed Bro?" << std::endl;
+
+	auto m_GenEventMap = findNode::getClass<PHHepMCGenEventMap>(topNode, "PHHepMCGenEventMap");
+//	PHHepMCGenEvent * genevt2 = m_GenEventMap->get(1);
+		
+
+//	cout << "-------------------------------- genevt: please write event now ------------------------------------" << endl;
+//	genevt2->PrintEvent();
+
+    PHHepMCGenEvent * genevt =  m_GenEventMap->get(1);
+//	cout << "--------------------------------  Print HepMC2 ------------------------------------" << endl;
+
+	genevt->PrintEvent();
+
+
+//	cout << "--------------------------------  HepMC2 - Pass 1 ------------------------------------" << endl;
+
+	truthevent = genevt->getEvent();
+//	cout << "--------------------------------  HepMC2 - Pass 2 ------------------------------------" << endl;
 	
+    std::shared_ptr<HepMC3::GenRunInfo> run =std::make_shared<HepMC3::GenRunInfo>();
+//	cout << "--------------------------------  HepMC2 - Pass 3 ------------------------------------" << endl;
+	
+	truthevent3 = ConvertHepMCGenEvent_2to3(*truthevent,run);
+//	cout << "--------------------------------  HepMC2 - Pass 4 ------------------------------------" << endl;
+ 
+    HepMC3::GenEvent& CheckEvent = *truthevent3;
+
+//	cout << "-------------------------------- Print HepMC3 ------------------------------------" << endl;
+
+	HepMC3::Print::content(CheckEvent);
+//	cout << "-------------------------------- DONE Here ------------------------------------" << endl;
+
+	HepMC3Out->write_event(*truthevent3);
+//	cout << "-------------------------------- Pass HepMC3 ------------------------------------" << endl;
+
+//	HepMC::IO_Ascii myoutfile("events.hepmc",std::ios::out); 
+//	myoutfile.write_event(genevt2);
+  //  HepMC::IO_Ascii persist("events.hepmc", std::ios::in);
+
+//	cout << "-------------------------------- genevt: write event now by SMART ZZ : genevt = persist.read_next_event() ------------------------------------" << endl;
+
+//	evt = persist.read_next_event();
+	T->Fill();	
+	
+
+	cout << "---------------------------------genevt: done write event now -----------------------------------" << endl;
+
+
+
 	assert(m_truth_info);
 
 	m_truth_info = findNode::getClass<PHG4TruthInfoContainer>(topNode, "G4TruthInfo");
@@ -254,6 +343,8 @@ int HFMLTriggerHepMCTrigger::process_event(PHCompositeNode* topNode)   //Now it 
 		}
 
 		bool VtxToQA = false;
+		if(DobbBar) VtxToQA = true;
+		
 		if (abs(ParentPDGID) == 421) VtxToQA = true;
 
 //		cout << "PDGID = " << PDGID << "   ParentPDGID = " << ParentPDGID << "   rapidity = " << rapidity << endl;
@@ -311,12 +402,12 @@ int HFMLTriggerHepMCTrigger::process_event(PHCompositeNode* topNode)   //Now it 
 		for(int s = 0; s < DaughterSize; s++){
 
 			if(abs(DaughterRapInfo[q][s]) > 1) RapAcc = false;
-			cout << "PDGID =  " << DaughterInfo[q][s] <<  "   rapidity = " << DaughterRapInfo[q][s]  << endl;
+		//	cout << "PDGID =  " << DaughterInfo[q][s] <<  "   rapidity = " << DaughterRapInfo[q][s]  << endl;
 		}
 
 		int key = -1;
 	    if (decaymap.find({DaughterInfo[q]}) != decaymap.end()) key = decaymap.find({DaughterInfo[q]})->second;
-		cout << "key = " << key << "   RapAcc = " << RapAcc << endl;
+		//cout << "key = " << key << "   RapAcc = " << RapAcc << endl;
 		RapAcc = true;
 		if(key > -1 && RapAcc == true){
 			m_hNorm->Fill("D0->PiK", 1);
@@ -327,7 +418,7 @@ int HFMLTriggerHepMCTrigger::process_event(PHCompositeNode* topNode)   //Now it 
 
 	}
 	
-	
+
 	if (nD0 >= 2)
 	{
 		cout <<"HFMLTriggerHepMCTrigger::process_event - D0-Pair with nD0 = "<<nD0  << "   Is that fuckin accepted?  " << acceptEvent <<endl;
@@ -361,7 +452,7 @@ int HFMLTriggerHepMCTrigger::process_event(PHCompositeNode* topNode)   //Now it 
 
 
 
-	if(!SignalSim){
+	if(!SignalSim || DobbBar){
 		return Fun4AllReturnCodes::EVENT_OK;
 
 	}
@@ -397,6 +488,15 @@ int HFMLTriggerHepMCTrigger::End(PHCompositeNode* topNode)
 
 		//    m_hitLayerMap->Write();
 	}
+	cout << "Writing HepMC NOW bro - Save HepMC ZZ" << endl;
+	
+	fout->cd();
+	T->Write();
+	fout->Close();
+	
+	cout << "Now Close HepMC File" << endl;
+
+	HepMC3Out->close();
 
 	cout << "HFMLTriggerHepMCTrigger::End - output to " << _foutname << ".*" << endl;
 
