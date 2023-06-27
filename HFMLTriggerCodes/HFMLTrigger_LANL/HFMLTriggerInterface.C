@@ -752,6 +752,7 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 				MVTXTrkID.push_back(trkid);
 				LayerID.push_back(layer);
 			
+				hitID++;
 				MVTXHitSize = MVTXHitSize + 1;
 				HitSize = HitSize + 1;
 			}  //    if (layer < _nlayers_maps)
