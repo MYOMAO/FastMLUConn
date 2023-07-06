@@ -16,6 +16,7 @@ rm -r install
 mkdir install
 setenv MYINSTALL $PWD/install/
 setenv LD_LIBRARY_PATH $MYINSTALL/lib:$LD_LIBRARY_PATH
+setenv LD_LIBRARY_PATH $MYINSTALL/lib64:$LD_LIBRARY_PATH
 set path = ( $MYINSTALL/bin $path )
 
 #source $OPT_SPHENIX/bin/setup_local.csh $MYINSTALL

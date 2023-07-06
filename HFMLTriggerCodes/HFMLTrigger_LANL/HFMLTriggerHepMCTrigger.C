@@ -216,7 +216,7 @@ int HFMLTriggerHepMCTrigger::process_event(PHCompositeNode* topNode)   //Now it 
     PHHepMCGenEvent * genevt =  m_GenEventMap->get(1);
 //	cout << "--------------------------------  Print HepMC2 ------------------------------------" << endl;
 
-	genevt->PrintEvent();
+//	genevt->PrintEvent(); //Not Print Event for Now
 
 
 //	cout << "--------------------------------  HepMC2 - Pass 1 ------------------------------------" << endl;
@@ -229,12 +229,13 @@ int HFMLTriggerHepMCTrigger::process_event(PHCompositeNode* topNode)   //Now it 
 	
 	truthevent3 = ConvertHepMCGenEvent_2to3(*truthevent,run);
 //	cout << "--------------------------------  HepMC2 - Pass 4 ------------------------------------" << endl;
- 
-    HepMC3::GenEvent& CheckEvent = *truthevent3;
+
+//    HepMC3::GenEvent& CheckEvent = *truthevent3;
 
 //	cout << "-------------------------------- Print HepMC3 ------------------------------------" << endl;
 
-	HepMC3::Print::content(CheckEvent);
+//	HepMC3::Print::content(CheckEvent); //Not Print Event for Now
+
 //	cout << "-------------------------------- DONE Here ------------------------------------" << endl;
 
 	HepMC3Out->write_event(*truthevent3);
