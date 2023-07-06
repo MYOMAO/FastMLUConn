@@ -16,11 +16,15 @@ echo "Build trackbase_historic"
 
 echo "Build main"
 
+
+mkdir eic-smear/build/
 cd eic-smear/build/
 rm -rf *
 cmake ../ -DCMAKE_INSTALL_PREFIX=${MYINSTALL}
 make -j10 install
 cd ../../
+
+mkdir EvtGenLocal/build/
 
 cd EvtGenLocal/build/
 make -j10 install
