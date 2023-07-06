@@ -7,21 +7,26 @@ lib_LTLIBRARIES = \
    libhfmltrigger.la
 
 AM_CPPFLAGS = \
+  -I/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/build/include/   \
   -I$(includedir) \
   -I$(OFFLINE_MAIN)/include \
   -I$(OFFLINE_MAIN)/include/eigen3 \
   -I$(ROOTSYS)/include \
-  -I/cvmfs/sphenix.sdcc.bnl.gov/gcc-8.3/opt/sphenix/core/rapidjson/include/
+  -I/cvmfs/sphenix.sdcc.bnl.gov/gcc-8.3/opt/sphenix/core/rapidjson/include/ \
+  -I/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/interfaces/HepMCCompatibility/include/ 
 
-AM_LDFLAGS = \
+libhfmltrigger_la_LDFLAGS = \
+  -L/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/MyOkLib \
   -L$(libdir) \
-	-L$(ROOTSYS)/lib \
-	-L$(OFFLINE_MAIN)/lib 
+  -L$(ROOTSYS)/lib \
+  -L$(OPT_SPHENIX)/lib \
+  -L/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/build/lib64/ 
+
 
 pkginclude_HEADERS = \
   HFMLTriggerOccupancy.h \
   HFMLTriggerInterface.h \
-  HFMLTriggerHepMCTrigger.h
+  HFMLTriggerHepMCTrigger.h 
 
 
 ROOTDICTS = \
@@ -44,11 +49,12 @@ libhfmltrigger_la_SOURCES = \
   HFMLTriggerOccupancy.C
 
 libhfmltrigger_la_LIBADD = \
+  -lHepMC3rootIO \
+  -lHepMC3 \
   -lfun4all \
   -lg4dst \
   -lg4mvtx \
-  -lg4eval \
-  -lphhepmc
+  -lg4eval 
 
 # Rule for generating table CINT dictionaries.
 %_Dict.C: %.h %LinkDef.h
