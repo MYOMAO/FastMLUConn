@@ -3,6 +3,8 @@ echo "-------------- Build All To Make HepMC3 Running --------------------"
 
 source /opt/sphenix/core/bin/sphenix_setup.csh -n ana.355
 
+#source /opt/sphenix/core/bin/sphenix_setup.csh -n new
+
 #setenv LD_LIBRARY_PATH /sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/build/lib64/:$LD_LIBRARY_PATH 
 
 
