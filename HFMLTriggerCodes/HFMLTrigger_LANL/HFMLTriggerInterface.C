@@ -641,6 +641,7 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 				auto surface = m_tGeometry->maps().getSiliconSurface(hitsetkey);
 
 
+				//cout << "hitsetkey = " << hitsetkey << "     chip = " << chip << "    stave = " << stave << "    layer = " << layer << endl;
 				TVector3 local_coords = geom->get_local_coords_from_pixel(pixel_x, pixel_z);
 
 				//Add Surface and Act Maps Properties
@@ -654,7 +655,12 @@ int HFMLTriggerInterface::process_event(PHCompositeNode* topNode)
 				   local_coords);
 				   */
 
-				TVector3 world_coords = geom->get_world_from_local_coords(surface, m_tGeometry ,local_coords);
+
+					TVector2 LocalUse;
+					LocalUse.SetX(local_coords.x());
+					LocalUse.SetY(local_coords.z());
+			
+					TVector3 world_coords = geom->get_world_from_local_coords(surface, m_tGeometry ,LocalUse);
 
 
 
@@ -981,6 +987,7 @@ for (TrkrHitSetContainer::ConstIterator hitset_iter = hitset_range_intt.first;
 			unsigned int LadderZId = InttDefs::getLadderZId(hitsetkey);
 			unsigned int LadderPhiId = InttDefs::getLadderPhiId(hitsetkey);
 
+			//cout << "INTT:  layer =    " << layer << "   LadderZId =  " << LadderZId << "   LadderPhiId = " << LadderPhiId << "      hitsetkey = " << hitsetkey << endl;
 
 
 		//      cout << "Pass 3.5" << endl;
