@@ -51,8 +51,7 @@ GetEnv=True
 #Initialdir=/sphenix/user/zshi/SimulationWork/2019sPHENIXAna/EMCAL/Simulations/TutorialTest/tutorials/AnaTutorial/src/condor/directory/
 #Initialdir=/sphenix/user/zshi/FastMLLatest/JobSub/
 
-Initialdir=/sphenix/user/zshi/FastMLUConn/JobSub/
-
+Initialdir=/sphenix/user/xyu3/CCNUBuild/FastMLUConn/JobSub/
 
 # Input file given to the job.
 Input=/dev/null
@@ -62,7 +61,7 @@ Input=/dev/null
 #Output=/sphenix/user/zshi/SimulationWork/2019sPHENIXAna/EMCAL/Simulations/TutorialTest/tutorials/AnaTutorial/src/condor/out/job.$(Cluster).out
 #Output=/sphenix/user/zshi/FastMLLatest/JobSub/out/job.$(Cluster).out
 #Output=/tmp
-Output=/sphenix/user/zshi/FastMLUConn/JobSub/out/job.$(Cluster).out
+Output=./out/job.$(Cluster).out
 
 # The job's stderr is sent to this file.
 #Error=/sphenix/user/zshi/SimulationWork/2019sPHENIXAna/EMCAL/Simulations/macros/macros/prototype4/condor/err/job.$(Cluster).err
@@ -71,7 +70,7 @@ Output=/sphenix/user/zshi/FastMLUConn/JobSub/out/job.$(Cluster).out
 #Error=/sphenix/user/zshi/FastMLLatest/JobSub/err/job.$(Cluster).err
 #Error=/tmp
 
-Error=/sphenix/user/zshi/FastMLUConn/JobSub/err/job.$(Cluster).err
+Error=./err/job.$(Cluster).err
 
 # The condor log file for this job, useful when debugging.
 #Log=/sphenix/user/zshi/SimulationWork/2019sPHENIXAna/EMCAL/Simulations/macros/macros/prototype4/condor/log/myjob.$(Cluster).log
@@ -80,7 +79,7 @@ Error=/sphenix/user/zshi/FastMLUConn/JobSub/err/job.$(Cluster).err
 #Log=/sphenix/user/zshi/FastMLLatest/JobSub/log/myjob.$(Cluster).log
 
 
-Log=/sphenix/user/zshi/FastMLUConn/JobSub/log/myjob.$(Cluster).log
+Log=./log/myjob.$(Cluster).log
 
 #Log=/tmp
 

@@ -1,13 +1,5 @@
 #!/bin/csh
-setenv HOME /star/u/$LOGNAME
-#setenv HOME /sphenix/user/$LOGNAME
 
-source /etc/csh.login
-foreach i (/etc/profile.d/*.csh)
- source $i
-end
-
-source $HOME/.login
 #source /direct/star+u/zshi/.login
 
 #source /cvmfs/sphenix.sdcc.bnl.gov/x8664_sl7/opt/sphenix/core/bin/sphenix_setup.csh -n ana.141
@@ -19,6 +11,7 @@ source $HOME/.login
 #source /opt/sphenix/core/bin/setup_root6.csh
 
 #source /opt/sphenix/core/bin/setup_root6_include_path.csh
+
 
 
 echo "START PRINT ENV"
@@ -54,11 +47,11 @@ cd workdir
 
 mkdir ${Name}
 
-cp -r ../macros/ ${Name} 
-cp ../Reconnect.sh  ${Name}/
+cp -r ../../HFMLTriggerCodes/ ${Name} 
+#cp ../Build.sh  ${Name}/
 
 
-cd ${Name}
+cd ${Name}/HFMLTriggerCodes/
 
 echo "NowList"
 
@@ -73,7 +66,7 @@ ls *
 
 #cd HFMLTrigger_LANL 
 
-source Reconnect.sh
+sh Build.sh
 
 
 #setenv ROOT_INCLUDE_PATH /sphenix/user/zshi/EvtGenTestJobSub/workdir/${Name}/macros/common:$ROOT_INCLUDE_PATH
@@ -93,7 +86,7 @@ ls *root
 
 #mv MyQAFile.root  ../../../../../OutFiles/MyQAFile_${Name}.root
 #mv Test2.json ../../../../../OutFiles/Background/D0Background_${Name}.json
-mv Test2.json ../../../../../OutFiles/Signal/D0Signal_${Name}.json
+mv NewTest.json ../../../../../../OutFiles/Signal/D0Signal_${Name}.json
 
 #mv Test2.json ../../../../../OutFiles/NewSignal/D0Signal_${Name}.json
 
@@ -102,7 +95,7 @@ mv Test2.json ../../../../../OutFiles/Signal/D0Signal_${Name}.json
 #mv G4EICDetector.root_g4femc_eval.root ../../../ERECO/${Material}/${Rad}/${Energy}/G4EICDetector.root_g4femc_eval_${Name}.root
 
 
-cd ../../../../
+cd ../../../../../
 
 rm -rf ${Name}
 

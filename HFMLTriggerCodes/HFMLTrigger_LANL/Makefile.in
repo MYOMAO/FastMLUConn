@@ -140,10 +140,6 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libhfmltrigger_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(libhfmltrigger_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
 PROGRAMS = $(noinst_PROGRAMS)
 am_testexternals_OBJECTS = testexternals.$(OBJEXT)
 testexternals_OBJECTS = $(am_testexternals_OBJECTS)
@@ -354,25 +350,21 @@ lib_LTLIBRARIES = \
    libhfmltrigger.la
 
 AM_CPPFLAGS = \
-  -I/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/build/include/   \
   -I$(includedir) \
   -I$(OFFLINE_MAIN)/include \
   -I$(OFFLINE_MAIN)/include/eigen3 \
   -I$(ROOTSYS)/include \
-  -I/cvmfs/sphenix.sdcc.bnl.gov/gcc-8.3/opt/sphenix/core/rapidjson/include/ \
-  -I/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/interfaces/HepMCCompatibility/include/ 
+  -I/cvmfs/sphenix.sdcc.bnl.gov/gcc-8.3/opt/sphenix/core/rapidjson/include/
 
-libhfmltrigger_la_LDFLAGS = \
-  -L/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/MyOkLib \
+AM_LDFLAGS = \
   -L$(libdir) \
-  -L$(ROOTSYS)/lib \
-  -L$(OPT_SPHENIX)/lib \
-  -L/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/build/lib64/ 
+	-L$(ROOTSYS)/lib \
+	-L$(OFFLINE_MAIN)/lib 
 
 pkginclude_HEADERS = \
   HFMLTriggerOccupancy.h \
   HFMLTriggerInterface.h \
-  HFMLTriggerHepMCTrigger.h 
+  HFMLTriggerHepMCTrigger.h
 
 ROOTDICTS = \
   HFMLTriggerHepMCTrigger_Dict.C \
@@ -392,12 +384,11 @@ libhfmltrigger_la_SOURCES = \
   HFMLTriggerOccupancy.C
 
 libhfmltrigger_la_LIBADD = \
-  -lHepMC3rootIO \
-  -lHepMC3 \
   -lfun4all \
   -lg4dst \
   -lg4mvtx \
-  -lg4eval 
+  -lg4eval \
+  -lphhepmc 
 
 BUILT_SOURCES = testexternals.C
 testexternals_SOURCES = \
@@ -482,7 +473,7 @@ clean-libLTLIBRARIES:
 	}
 
 libhfmltrigger.la: $(libhfmltrigger_la_OBJECTS) $(libhfmltrigger_la_DEPENDENCIES) $(EXTRA_libhfmltrigger_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libhfmltrigger_la_LINK) -rpath $(libdir) $(libhfmltrigger_la_OBJECTS) $(libhfmltrigger_la_LIBADD) $(LIBS)
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libhfmltrigger_la_OBJECTS) $(libhfmltrigger_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -937,7 +928,6 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-nobase_dist_pcmDATA \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
 	uninstall-am uninstall-libLTLIBRARIES \
 	uninstall-nobase_dist_pcmDATA uninstall-pkgincludeHEADERS
-
 
 # Rule for generating table CINT dictionaries.
 %_Dict.C: %.h %LinkDef.h

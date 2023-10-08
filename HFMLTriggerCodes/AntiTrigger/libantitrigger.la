@@ -17,7 +17,7 @@ old_library=''
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' -L/gpfs/mnt/gpfs02/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/install/lib -L/cvmfs/sphenix.sdcc.bnl.gov/gcc-12.1.0/release/release_ana/ana.355/lib -lfun4all -lg4eval -lkfparticle_sphenix -lphhepmc /cvmfs/sphenix.sdcc.bnl.gov/gcc-12.1.0/opt/sphenix/core/gcc/12.1.0-57c96/x86_64-centos7/bin/../lib/gcc/x86_64-pc-linux-gnu/12.1.0/../../../../lib64/libstdc++.la'
+dependency_libs=' -L/sphenix/user/xyu3/CCNUBuild/FastMLUConn/HFMLTriggerCodes/install/lib -L/cvmfs/sphenix.sdcc.bnl.gov/gcc-12.1.0/release/release_ana/ana.355/lib -lfun4all -lg4eval -lkfparticle_sphenix -lphhepmc /cvmfs/sphenix.sdcc.bnl.gov/gcc-12.1.0/opt/sphenix/core/gcc/12.1.0-57c96/x86_64-centos7/bin/../lib/gcc/x86_64-pc-linux-gnu/12.1.0/../../../../lib64/libstdc++.la'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/gpfs/mnt/gpfs02/sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/install/lib'
+libdir='/sphenix/user/xyu3/CCNUBuild/FastMLUConn/HFMLTriggerCodes/install/lib'

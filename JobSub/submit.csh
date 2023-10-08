@@ -1,5 +1,5 @@
 set i=1
-set f=2000
+set f=20
 
 
 

@@ -1,73 +1,44 @@
-echo "-------------- CHANGING SOFTWARE NOW BRO --------------------"
+#!/bin/bash
 
-#source /opt/sphenix/core/bin/sphenix_setup.csh -n ana.270
-#source /cvmfs/sphenix.sdcc.bnl.gov/x8664_sl7/opt/sphenix/core/bin/sphenix_setup.csh -n ana.221
-#source /opt/sphenix/core/bin/sphenix_setup.csh -n ana.200
+# Source the sphenix_setup.csh script
+#source /opt/sphenix/core/bin/sphenix_setup.sh -n ana.355
+sh  /opt/sphenix/core/bin/sphenix_setup.sh -n ana.355
 
-#source /opt/sphenix/core/bin/sphenix_setup.csh -n 
-
-#source /cvmfs/sphenix.sdcc.bnl.gov/gcc-8.3/opt/sphenix/core/bin/sphenix_setup.csh -n ana.273
-
-
-#source /opt/sphenix/core/bin/sphenix_setup.csh -n ana.346
-
-source /opt/sphenix/core/bin/sphenix_setup.csh -n  ana.355
-
-#setenv LD_LIBRARY_PATH /sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/build/lib64/:$LD_LIBRARY_PATH 
-
-
+# Remove the 'install' directory
 rm -r install
 
+# Create a new 'install' directory
 mkdir install
-setenv MYINSTALL $PWD/install/
-setenv LD_LIBRARY_PATH $MYINSTALL/lib:$LD_LIBRARY_PATH
-set path = ( $MYINSTALL/bin $path )
 
-#source $OPT_SPHENIX/bin/setup_local.csh $MYINSTALL
-echo "Build trackbase_historic"
+# Set environment variables MYINSTALL and LD_LIBRARY_PATH
+export MYINSTALL=$PWD/install/
+export LD_LIBRARY_PATH=$MYINSTALL/lib:$LD_LIBRARY_PATH
 
+# Update the PATH environment variable
+export PATH=$MYINSTALL/bin:$PATH
 
-#cd trackbase_historic 
+# Change directory to 'HFMLTrigger_LANL'
+cd HFMLTrigger_LANL
 
-#autogen.sh --prefix=$MYINSTALL
-#make
-#make install
-
-#cd ../
-
-cd  coresoftware/simulation/g4simulation/g4main/
+# Clean the project
 make clean
-#autogen.sh --prefix=$MYINSTALL
+
+# Configure and install the project
+./autogen.sh --prefix=$MYINSTALL
 make -j10 install
-#make install
 
+# Change back to the previous directory
+cd ..
 
-cd ../../../../
-
-setenv LD_LIBRARY_PATH /sphenix/user/zshi/FastMLUConn/HFMLTriggerCodes/HepMC3Local/HepMC3/build/lib64/:$LD_LIBRARY_PATH
-
-echo "-------------- BUILD main ------------------------"
-
-cd HFMLTrigger_LANL/
-make clean
-#cd coresoftware/simulation/g4simulation/g4detectors/
-autogen.sh --prefix=$MYINSTALL
-make
-make install
-
-
-cd ../
-
+# Change directory to 'AntiTrigger'
 cd AntiTrigger/
 
-autogen.sh --prefix=$MYINSTALL
-make
-make install
+# Configure and install the AntiTrigger project
+./autogen.sh --prefix=$MYINSTALL
+make -j10 install
 
+# Change back to the previous directory
+cd ..
 
-cd ../
-
-
-setenv ROOT_INCLUDE_PATH ${PWD}/macros/common:$ROOT_INCLUDE_PATH
-
-#echo "-------------- DONE CHANGING SOFTWARE NOW BRO --------------------"
+# Add the specified directory to ROOT_INCLUDE_PATH
+export ROOT_INCLUDE_PATH=${PWD}/macros/common:$ROOT_INCLUDE_PATH
