@@ -1,17 +1,5 @@
 #!/bin/csh
 
-#source /direct/star+u/zshi/.login
-
-#source /cvmfs/sphenix.sdcc.bnl.gov/x8664_sl7/opt/sphenix/core/bin/sphenix_setup.csh -n ana.141
-
-#source /cvmfs/sphenix.sdcc.bnl.gov/x8664_sl7/opt/sphenix/core/bin/sphenix_setup.csh -n
-#source /cvmfs/sphenix.sdcc.bnl.gov/x8664_sl7/opt/sphenix/core/bin/setup_root6.csh
-
-#source /opt/sphenix/core/bin/sphenix_setup.csh -n
-#source /opt/sphenix/core/bin/setup_root6.csh
-
-#source /opt/sphenix/core/bin/setup_root6_include_path.csh
-
 
 
 echo "START PRINT ENV"
@@ -47,11 +35,15 @@ cd workdir
 
 mkdir ${Name}
 
-cp -r ../../HFMLTriggerCodes/ ${Name} 
+#cp -r ../../HFMLTriggerCodes/ ${Name} 
 #cp ../Build.sh  ${Name}/
 
 
-cd ${Name}/HFMLTriggerCodes/
+cp -r ../../HFMLTriggerCodes/ ${Name}/ 
+#cp ../Build.sh  ${Name}/
+
+
+cd ${Name}/HFMLTriggerCodes
 
 echo "NowList"
 
@@ -66,7 +58,7 @@ ls *
 
 #cd HFMLTrigger_LANL 
 
-sh Build.sh
+source Build.sh
 
 
 #setenv ROOT_INCLUDE_PATH /sphenix/user/zshi/EvtGenTestJobSub/workdir/${Name}/macros/common:$ROOT_INCLUDE_PATH

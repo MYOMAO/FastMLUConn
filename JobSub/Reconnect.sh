@@ -1,6 +1,6 @@
 #source /cvmfs/sphenix.sdcc.bnl.gov/gcc-12.1.0/opt/sphenix/core/bin/sphenix_setup.csh –n
 
-csh /opt/sphenix/core/bin/sphenix_setup.csh -n ana.355
+csh /opt/sphenix/core/bin/sphenix_setup.csh -n ana.358
 
 setenv MYINSTALL ../../../HFMLTriggerCodes/install/
 setenv LD_LIBRARY_PATH $MYINSTALL/lib:$LD_LIBRARY_PATH

@@ -51,7 +51,9 @@ GetEnv=True
 #Initialdir=/sphenix/user/zshi/SimulationWork/2019sPHENIXAna/EMCAL/Simulations/TutorialTest/tutorials/AnaTutorial/src/condor/directory/
 #Initialdir=/sphenix/user/zshi/FastMLLatest/JobSub/
 
-Initialdir=/sphenix/user/xyu3/CCNUBuild/FastMLUConn/JobSub/
+#Initialdir=/sphenix/user/xyu3/CCNUBuild/FastMLUConn/JobSub/
+
+Initialdir=./
 
 # Input file given to the job.
 Input=/dev/null
